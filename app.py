@@ -1,14 +1,18 @@
-from flask import Flask
+from flask import Flask, request, jasonify
+from models.task import Task
 
 app = Flask(__name__)
 
-@app.route("/")
-def hello_world():
-    return "Hello World"
-
-@app.route("/users")
-def get_users():
-    return "Não há usuários"
+tasks = []
+task_id_controller = 1
+@app.route('/tasks', methods=['POST'])
+def create_task():
+    global task_id_controller
+    data = request.get_json()
+    new_task = Task(id=task_id_controller, tittle=data.get('title'), description=data.get('description'))
+    task_id_controller += 1
+    tasks.append(new_task)
+    return jasonify({"message: Tarefa craida com sucesso!"})
 
 if __name__ == "__main__":
     app.run(debug=True)
